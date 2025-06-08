@@ -17,8 +17,8 @@ export default function App() {
           {/* <Route path="/" element={<HomePage />} /> */}
           <Route path="/" element={<Signin />} />
           <Route path="*" element={<Signin />} />
-          <Route element={<PrivateRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+          <Route element={<PrivateRoute />}>
           </Route>
           <Route element={<OnlyAdminPrivateRoute />}></Route>
         </Routes>

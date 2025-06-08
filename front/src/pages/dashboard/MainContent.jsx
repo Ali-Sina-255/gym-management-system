@@ -5,7 +5,7 @@ import Report from "./pages/reports";
 import Setting from "./pages/setting";
 // import RentManager from "./pages/RentManager";
 import ServiceManager from "./pages/ServiceManger";
-import Shopkeepers from "./pages/ShopKeepers";
+import Shopkeepers from "./pages/Athletes";
 import StaffManager from "./pages/StaffManager";
 import Incomes from "./pages/incomes";
 import Expenses from "./pages/Expenses";
@@ -16,6 +16,8 @@ import Rent from "./pages/RentManager";
 import CreateUser from "./pages/CreaateUsers";
 import Residentialunites from "./pages/ResidentialUnites";
 import Financial from "./pages/Financial";
+import Fees from "./pages/Fees";
+import Athletes from "./pages/Athletes";
 const MainContent = ({ activeComponent }) => {
   const renderContent = () => {
     switch (activeComponent) {
@@ -35,8 +37,10 @@ const MainContent = ({ activeComponent }) => {
         return <Setting />;
       case "ServiceManager":
         return <ServiceManager />;
-      case "Shopkeepers":
-        return <Shopkeepers />;
+      case "Fees":
+        return <Fees />;
+      case "Athletes":
+        return <Athletes />;
       case "Blockes":
         return <Residentialunites />;
       case "StafFManager":

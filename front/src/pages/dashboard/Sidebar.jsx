@@ -7,7 +7,7 @@ import { signOutSuccess } from "../../state/userSlice/userSlice"; // Make sure p
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { Fa3, FaBuilding } from "react-icons/fa6";
+import { Fa3, FaBuilding, FaMoneyBill } from "react-icons/fa6";
 import { MdDashboardCustomize } from "react-icons/md";
 import { FaShop } from "react-icons/fa6";
 import { GiTakeMyMoney } from "react-icons/gi";
@@ -45,7 +45,8 @@ const Sidebar = ({ setActiveComponent }) => {
 
   const AllComponents = [
     { name: "صفحه اصلی", value: "home", icon: <LuActivity /> },
-    { name: "دوکان‌دار ها", value: "Shopkeepers", icon: <LuUserRoundPlus /> },
+    { name: "ورزشکاران", value: "Athletes", icon: <LuUserRoundPlus /> },
+    { name: "فیس", value: "Fees", icon: <FaMoneyBill /> },
     { name: "قراردادها", value: "Agreements", icon: <FaBuilding /> },
     { name: "خدمات", value: "ServiceManager", icon: <MdLocalLaundryService /> },
     { name: "کرایه‌", value: "RentManger", icon: <GiTakeMyMoney /> },
@@ -116,7 +117,7 @@ const Sidebar = ({ setActiveComponent }) => {
       </header>
 
       <ul className=" mr-1">
-        {accessibleComponents.map((component, index) => (
+        {AllComponents.map((component, index) => (
           <li key={index} className="relative group cursor-pointer">
             {component.value === "signout" ? (
               <a
