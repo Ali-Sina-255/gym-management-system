@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+const BASE_URL = import.meta.env.VITE_BASE_URL 
 const Athletes = () => {
   const [athletes, setAthletes] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
-    las_name: "",
+    last_name: "",
     father_name: "",
     current_location: "",
     permanent_location: "",
@@ -22,7 +22,7 @@ const Athletes = () => {
   }, []);
 
   const fetchAthletes = async () => {
-    const res = await axios.get("/api/athletes/");
+    const res = await axios.get(`${BASE_URL}/core/athletes/`);
     setAthletes(res.data);
   };
 
@@ -45,14 +45,14 @@ const Athletes = () => {
 
     try {
       if (editId) {
-        await axios.put(`/api/athletes/${editId}/`, data);
+        await axios.put(`${BASE_URL}/core/athletes/${editId}/`, data);
         setEditId(null);
       } else {
-        await axios.post("/api/athletes/", data);
+        await axios.post(`${BASE_URL}/core/athletes/`, data);
       }
       setFormData({
         name: "",
-        las_name: "",
+        last_name: "",
         father_name: "",
         current_location: "",
         permanent_location: "",
@@ -71,7 +71,7 @@ const Athletes = () => {
     setEditId(athlete.id);
     setFormData({
       name: athlete.name,
-      las_name: athlete.las_name,
+      last_name: athlete.last_name,
       father_name: athlete.father_name,
       current_location: athlete.current_location,
       permanent_location: athlete.permanent_location,
@@ -83,7 +83,7 @@ const Athletes = () => {
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`/api/athletes/${id}/`);
+    await axios.delete(`${BASE_URL}/core/athletes/${id}/`);
     fetchAthletes();
   };
 
@@ -101,7 +101,7 @@ const Athletes = () => {
 
         {[
           { name: "name", label: "نام" },
-          { name: "las_name", label: "نام خانوادگی" },
+          { name: "last_name", label: "نام خانوادگی" },
           { name: "father_name", label: "نام پدر" },
           { name: "current_location", label: "محل فعلی" },
           { name: "permanent_location", label: "محل اصلی" },
@@ -164,7 +164,7 @@ const Athletes = () => {
               className="border p-2 flex justify-between items-center"
             >
               <span>
-                {athlete.name} - {athlete.las_name}
+                {athlete.name} - {athlete.last_name}
               </span>
               <div className="space-x-2">
                 <button

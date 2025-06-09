@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+const BASE_URL = import.meta.env.VITE_BASE_URL; 
 const Fees = () => {
   const [fees, setFees] = useState([]);
   const [athletes, setAthletes] = useState([]);
@@ -19,12 +19,12 @@ const Fees = () => {
   }, []);
 
   const fetchFees = async () => {
-    const res = await axios.get("/api/fees/");
+    const res = await axios.get(`${BASE_URL}/core/fees/`);
     setFees(res.data);
   };
 
   const fetchAthletes = async () => {
-    const res = await axios.get("/api/athletes/");
+    const res = await axios.get(`${BASE_URL}/core/athletes/`);
     setAthletes(res.data);
   };
 
@@ -36,9 +36,9 @@ const Fees = () => {
     e.preventDefault();
     try {
       if (editId) {
-        await axios.put(`/api/fees/${editId}/`, formData);
+        await axios.put(`${BASE_URL}/core/fees/${editId}/`, formData);
       } else {
-        await axios.post("/api/fees/", formData);
+        await axios.post(`${BASE_URL}/core/fees/`, formData);
       }
       setFormData({
         athlete: "",
@@ -67,7 +67,7 @@ const Fees = () => {
 
   const handleDelete = async (id) => {
     if (confirm("آیا مطمئن هستید که می‌خواهید حذف کنید؟")) {
-      await axios.delete(`/api/fees/${id}/`);
+      await axios.delete(`${BASE_URL}/core/fees/${id}/`);
       fetchFees();
     }
   };
