@@ -10,7 +10,7 @@ import StaffManager from "./pages/StaffManager";
 import Incomes from "./pages/incomes";
 import Expenses from "./pages/Expenses";
 import BlockManager from "./pages/BlockManger";
-import Agreements from "./pages/Agreements";
+import Agreements from "./pages/ActiveAthletes";
 import Salaries from "./pages/Salaries";
 import Rent from "./pages/RentManager";
 import CreateUser from "./pages/CreaateUsers";
@@ -18,13 +18,14 @@ import Residentialunites from "./pages/ResidentialUnites";
 import Financial from "./pages/Financial";
 import Fees from "./pages/Fees";
 import Athletes from "./pages/Athletes";
+import ActiveAthletes from "./pages/ActiveAthletes";
 const MainContent = ({ activeComponent }) => {
   const renderContent = () => {
     switch (activeComponent) {
       case "dashboard":
         return <Dashboard />;
-      case "Agreements":
-        return <Agreements />;
+      case "ActiveAthletes":
+        return <ActiveAthletes />;
       case "BlockManager":
         return <BlockManager />;
       case "user managements":

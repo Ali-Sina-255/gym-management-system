@@ -1019,16 +1019,6 @@ const FinancialReports = () => {
             </button>
           </div>
         </div>
-        {error && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-300 text-red-700 rounded-lg text-sm shadow-sm">
-            <p className="font-semibold mb-1">خطا:</p>
-            {error.split("\n").map((errLine, index) => (
-              <pre key={index} className="whitespace-pre-wrap text-xs">
-                {errLine}
-              </pre>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Summary Cards Section */}
