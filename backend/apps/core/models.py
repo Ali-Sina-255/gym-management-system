@@ -10,9 +10,9 @@ class Athlete(models.Model):
     father_name = models.CharField(max_length=255)
     current_location = models.CharField(max_length=255)
     permanent_location = models.CharField(max_length=255)
-    nic = models.FileField()
-    picture = models.ImageField(upload_to="images/")
-    document = models.ImageField(upload_to="images")
+    nic = models.FileField(null=True, blank=True)  # Allow null and blank
+    picture = models.ImageField(upload_to="images/", null=True, blank=True)
+    document = models.ImageField(upload_to="images", null=True, blank=True)
     date_of_birth = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
