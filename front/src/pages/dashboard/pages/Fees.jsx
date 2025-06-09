@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-const BASE_URL = import.meta.env.VITE_BASE_URL; 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Fees = () => {
   const [fees, setFees] = useState([]);
   const [athletes, setAthletes] = useState([]);
@@ -35,10 +35,20 @@ const Fees = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(formData);
+      const remainder =
+        parseFloat(formData.fee || 0) - parseFloat(formData.taken || 0);
+      const payload = {
+        ...formData,
+        fee: parseFloat(formData.fee),
+        taken: parseFloat(formData.taken),
+        remainder: remainder,
+      };
+
       if (editId) {
-        await axios.put(`${BASE_URL}/core/fees/${editId}/`, formData);
+        await axios.put(`${BASE_URL}/core/fees/${editId}/`, payload);
       } else {
-        await axios.post(`${BASE_URL}/core/fees/`, formData);
+        await axios.post(`${BASE_URL}/core/fees/`, payload);
       }
       setFormData({
         athlete: "",
@@ -135,13 +145,12 @@ const Fees = () => {
           <label className="block mb-1 text-sm font-medium">باقی‌مانده</label>
           <input
             name="remainder"
-            value={formData.remainder}
-            onChange={handleChange}
+            value={formData.fee - formData.taken}
             type="number"
             step="0.01"
-            required
-            className="w-full border p-2 rounded-lg"
-            placeholder="مثلاً ۲۰۰"
+            readOnly
+            className="w-full border p-2 rounded-lg bg-gray-100 cursor-not-allowed"
+            placeholder={formData.fee - formData.taken}
           />
         </div>
 
