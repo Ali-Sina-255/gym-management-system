@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import ImageModal from "../../../features/authentication/hooks/ImageModal";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Fees = () => {
   const [fees, setFees] = useState([]);
   const [athletes, setAthletes] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null); // For modal
   const [formData, setFormData] = useState({
     athlete: "",
     fee: "",
@@ -21,18 +23,6 @@ const Fees = () => {
     fetchAthletes();
   }, []);
 
-  useEffect(() => {
-    // Close dropdown if clicking outside
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
 
   const fetchFees = async () => {
     const res = await axios.get(`${BASE_URL}/core/fees/`);
@@ -110,7 +100,6 @@ const Fees = () => {
       dir="rtl"
     >
       <h2 className="text-2xl font-bold mb-4 text-center">مدیریت فیس‌ها</h2>
-
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4 mb-6">
         <div ref={dropdownRef} className="relative">
@@ -123,7 +112,7 @@ const Fees = () => {
             {selectedAthlete ? (
               <>
                 <img
-                  src={selectedAthlete.image_url} // adjust if your field name differs
+                  src={selectedAthlete.picture} // adjust if your field name differs
                   alt={selectedAthlete.name}
                   className="w-8 h-8 rounded-full ml-2 object-cover"
                 />
@@ -133,7 +122,7 @@ const Fees = () => {
               </>
             ) : (
               <span className="text-gray-400">یک ورزشکار را انتخاب کنید</span>
-            )}
+            )}{" "}
             <svg
               className="w-4 h-4 ml-2"
               fill="none"
@@ -155,17 +144,21 @@ const Fees = () => {
               {athletes.map((a) => (
                 <li
                   key={a.id}
-                  onClick={() => handleAthleteSelect(a.id)}
+                  onClick={() => handleAthleteSelect(a.id)} // main li click
                   className="cursor-pointer flex items-center p-2 hover:bg-blue-100"
                 >
                   <img
-                    src={a.picture} // adjust to your actual image field
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent li onClick when image is clicked
+                      setSelectedImage(`${a.picture}`);
+                    }}
+                    src={a.picture}
                     alt={a.name}
                     className="w-8 h-8 rounded-full ml-2 object-cover"
                   />
-                  <span>
+                  <div>
                     {a.name} {a.last_name}
-                  </span>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -233,7 +226,6 @@ const Fees = () => {
           {editId ? "ویرایش فیس" : "ثبت فیس"}
         </button>
       </form>
-
       {/* Table stays unchanged */}
       <div className="overflow-x-auto">
         <table className="w-full table-auto border text-sm">
@@ -285,7 +277,12 @@ const Fees = () => {
             )}
           </tbody>
         </table>
-      </div>
+      </div>{" "}
+      {/* Image Modal */}
+      <ImageModal
+        imageSrc={selectedImage ? `${selectedImage}` : null}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };
