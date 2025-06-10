@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Fees = () => {
   const [fees, setFees] = useState([]);
@@ -12,11 +13,26 @@ const Fees = () => {
     starting_date: "",
   });
   const [editId, setEditId] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     fetchFees();
     fetchAthletes();
   }, []);
+
+  useEffect(() => {
+    // Close dropdown if clicking outside
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   const fetchFees = async () => {
     const res = await axios.get(`${BASE_URL}/core/fees/`);
@@ -32,10 +48,14 @@ const Fees = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleAthleteSelect = (athleteId) => {
+    setFormData({ ...formData, athlete: athleteId });
+    setDropdownOpen(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(formData);
       const remainder =
         parseFloat(formData.fee || 0) - parseFloat(formData.taken || 0);
       const payload = {
@@ -82,6 +102,8 @@ const Fees = () => {
     }
   };
 
+  const selectedAthlete = athletes.find((a) => a.id === formData.athlete);
+
   return (
     <div
       className="max-w-4xl mx-auto mt-8 p-4 bg-white rounded-xl shadow-lg"
@@ -91,25 +113,66 @@ const Fees = () => {
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-        <div>
+        <div ref={dropdownRef} className="relative">
           <label className="block mb-1 text-sm font-medium">ورزشکار</label>
-          <select
-            name="athlete"
-            value={formData.athlete}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg"
-            required
+          <button
+            type="button"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="w-full border p-2 rounded-lg flex items-center justify-between"
           >
-            <option value="">یک ورزشکار را انتخاب کنید</option>
-            {Array.isArray(athletes) &&
-              athletes.length > 0 &&
-              athletes.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name} {a.las_name}
-                </option>
+            {selectedAthlete ? (
+              <>
+                <img
+                  src={selectedAthlete.image_url} // adjust if your field name differs
+                  alt={selectedAthlete.name}
+                  className="w-8 h-8 rounded-full ml-2 object-cover"
+                />
+                <span>
+                  {selectedAthlete.name} {selectedAthlete.las_name}
+                </span>
+              </>
+            ) : (
+              <span className="text-gray-400">یک ورزشکار را انتخاب کنید</span>
+            )}
+            <svg
+              className="w-4 h-4 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          {dropdownOpen && (
+            <ul className="absolute z-10 w-full max-h-60 overflow-y-auto bg-white border rounded-md mt-1 shadow-lg">
+              {athletes.map((a) => (
+                <li
+                  key={a.id}
+                  onClick={() => handleAthleteSelect(a.id)}
+                  className="cursor-pointer flex items-center p-2 hover:bg-blue-100"
+                >
+                  <img
+                    src={a.picture} // adjust to your actual image field
+                    alt={a.name}
+                    className="w-8 h-8 rounded-full ml-2 object-cover"
+                  />
+                  <span>
+                    {a.name} {a.last_name}
+                  </span>
+                </li>
               ))}
-          </select>
+            </ul>
+          )}
         </div>
+
+        {/* The rest of the form fields stay unchanged */}
 
         <div>
           <label className="block mb-1 text-sm font-medium">مقدار فیس</label>
@@ -171,7 +234,7 @@ const Fees = () => {
         </button>
       </form>
 
-      {/* Table */}
+      {/* Table stays unchanged */}
       <div className="overflow-x-auto">
         <table className="w-full table-auto border text-sm">
           <thead className="bg-gray-100">
