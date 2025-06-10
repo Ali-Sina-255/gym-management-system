@@ -5,6 +5,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Athletes = () => {
   const [athletes, setAthletes] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null); // For modal
+  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     last_name: "",
@@ -126,92 +127,98 @@ const Athletes = () => {
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">مدیریت ورزشکاران</h1>
-
-      <form
-        onSubmit={handleSubmit}
-        className="mb-8 space-y-6 bg-white p-6 rounded-2xl shadow-lg max-w-2xl mx-auto"
+      <button
+        onClick={() => setShowForm(!showForm)}
+        className="mb-4 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
       >
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-          {editId ? "ویرایش ورزشکار" : "ایجاد ورزشکار"}
-        </h2>
-
-        {[
-          { name: "name", label: "نام" },
-          { name: "last_name", label: "نام خانوادگی" },
-          { name: "father_name", label: "نام پدر" },
-          { name: "current_location", label: "محل فعلی" },
-          { name: "permanent_location", label: "محل اصلی" },
-          { name: "date_of_birth", label: "تاریخ تولد", type: "date" },
-        ].map(({ name, label, type = "text" }) => (
-          <div key={name} className="relative">
-            <label
-              htmlFor={name}
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              {label}
-            </label>
-            <input
-              id={name}
-              name={name}
-              type={type}
-              value={formData[name]}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        ))}
-        {[
-          { name: "nic", label: "فایل تذکره/کارت هویت" },
-          { name: "picture", label: "عکس" },
-          { name: "document", label: "اسناد" },
-        ].map(({ name, label }) => (
-          <div key={name} className="relative">
-            <label
-              htmlFor={name}
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              {label}
-            </label>
-            <input
-              ref={fileInputRefs[name]} // ✅ ref set dynamically
-              id={name}
-              name={name}
-              type="file"
-              accept={name === "picture" ? "image/*" : undefined}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
-            {previews[name] && (
-              <div className="mt-2">
-                {name === "picture" || name === "nic" ? (
-                  <img
-                    src={previews[name]}
-                    alt={label}
-                    className="h-24 rounded border"
-                  />
-                ) : (
-                  <a
-                    href={previews[name]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline text-sm"
-                  >
-                    مشاهده فایل
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
+        {showForm ? "بستن فرم ورزشکار" : "ایجاد ورزشکار جدید"}
+      </button>
+      {showForm && (
+        <form
+          onSubmit={handleSubmit}
+          className="mb-8 space-y-6 bg-white p-6 rounded-2xl shadow-lg max-w-2xl mx-auto"
         >
-          {editId ? "ویرایش ورزشکار" : "ایجاد ورزشکار"}
-        </button>
-      </form>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
+            {editId ? "ویرایش ورزشکار" : "ایجاد ورزشکار"}
+          </h2>
 
+          {[
+            { name: "name", label: "نام" },
+            { name: "last_name", label: "نام خانوادگی" },
+            { name: "father_name", label: "نام پدر" },
+            { name: "current_location", label: "محل فعلی" },
+            { name: "permanent_location", label: "محل اصلی" },
+            { name: "date_of_birth", label: "تاریخ تولد", type: "date" },
+          ].map(({ name, label, type = "text" }) => (
+            <div key={name} className="relative">
+              <label
+                htmlFor={name}
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                {label}
+              </label>
+              <input
+                id={name}
+                name={name}
+                type={type}
+                value={formData[name]}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          ))}
+          {[
+            { name: "nic", label: "فایل تذکره/کارت هویت" },
+            { name: "picture", label: "عکس" },
+            { name: "document", label: "اسناد" },
+          ].map(({ name, label }) => (
+            <div key={name} className="relative">
+              <label
+                htmlFor={name}
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                {label}
+              </label>
+              <input
+                ref={fileInputRefs[name]} // ✅ ref set dynamically
+                id={name}
+                name={name}
+                type="file"
+                accept={name === "picture" ? "image/*" : undefined}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              />
+              {previews[name] && (
+                <div className="mt-2">
+                  {name === "picture" || name === "nic" ? (
+                    <img
+                      src={previews[name]}
+                      alt={label}
+                      className="h-24 rounded border"
+                    />
+                  ) : (
+                    <a
+                      href={previews[name]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 underline text-sm"
+                    >
+                      مشاهده فایل
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
+          >
+            {editId ? "ویرایش ورزشکار" : "ایجاد ورزشکار"}
+          </button>
+        </form>
+      )}
       <ul className="space-y-2">
         {Array.isArray(athletes) &&
           athletes.length > 0 &&
@@ -240,7 +247,10 @@ const Athletes = () => {
               {/* Actions */}
               <div className="space-x-2">
                 <button
-                  onClick={() => handleEdit(athlete)}
+                  onClick={() => {
+                    handleEdit(athlete);
+                    setShowForm(!showForm);
+                  }}
                   className="bg-yellow-400 px-2 py-1 rounded"
                 >
                   Edit
