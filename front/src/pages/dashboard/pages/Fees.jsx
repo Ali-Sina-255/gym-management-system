@@ -6,6 +6,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 const Fees = () => {
   const [fees, setFees] = useState([]);
   const [athletes, setAthletes] = useState([]);
+  const [showForm, setShowForm] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null); // For modal
   const [formData, setFormData] = useState({
     athlete: "",
@@ -22,7 +23,6 @@ const Fees = () => {
     fetchFees();
     fetchAthletes();
   }, []);
-
 
   const fetchFees = async () => {
     const res = await axios.get(`${BASE_URL}/core/fees/`);
@@ -101,131 +101,139 @@ const Fees = () => {
     >
       <h2 className="text-2xl font-bold mb-4 text-center">مدیریت فیس‌ها</h2>
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-        <div ref={dropdownRef} className="relative">
-          <label className="block mb-1 text-sm font-medium">ورزشکار</label>
-          <button
-            type="button"
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-full border p-2 rounded-lg flex items-center justify-between"
-          >
-            {selectedAthlete ? (
-              <>
-                <img
-                  src={selectedAthlete.picture} // adjust if your field name differs
-                  alt={selectedAthlete.name}
-                  className="w-8 h-8 rounded-full ml-2 object-cover"
-                />
-                <span>
-                  {selectedAthlete.name} {selectedAthlete.las_name}
-                </span>
-              </>
-            ) : (
-              <span className="text-gray-400">یک ورزشکار را انتخاب کنید</span>
-            )}{" "}
-            <svg
-              className="w-4 h-4 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+      <button
+        onClick={() => setShowForm(!showForm)}
+        className="mb-4 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
+      >
+        {showForm ? "بستن فرم فیس" : "ایجاد فیس جدید"}
+      </button>
+      {showForm && (
+        <form onSubmit={handleSubmit} className="space-y-4 mb-6">
+          <div ref={dropdownRef} className="relative">
+            <label className="block mb-1 text-sm font-medium">ورزشکار</label>
+            <button
+              type="button"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="w-full border p-2 rounded-lg flex items-center justify-between"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-
-          {dropdownOpen && (
-            <ul className="absolute z-10 w-full max-h-60 overflow-y-auto bg-white border rounded-md mt-1 shadow-lg">
-              {athletes.map((a) => (
-                <li
-                  key={a.id}
-                  onClick={() => handleAthleteSelect(a.id)} // main li click
-                  className="cursor-pointer flex items-center p-2 hover:bg-blue-100"
-                >
+              {selectedAthlete ? (
+                <>
                   <img
-                    onClick={(e) => {
-                      e.stopPropagation(); // prevent li onClick when image is clicked
-                      setSelectedImage(`${a.picture}`);
-                    }}
-                    src={a.picture}
-                    alt={a.name}
+                    src={selectedAthlete.picture} // adjust if your field name differs
+                    alt={selectedAthlete.name}
                     className="w-8 h-8 rounded-full ml-2 object-cover"
                   />
-                  <div>
-                    {a.name} {a.last_name}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+                  <span>
+                    {selectedAthlete.name} {selectedAthlete.las_name}
+                  </span>
+                </>
+              ) : (
+                <span className="text-gray-400">یک ورزشکار را انتخاب کنید</span>
+              )}{" "}
+              <svg
+                className="w-4 h-4 ml-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
 
-        {/* The rest of the form fields stay unchanged */}
+            {dropdownOpen && (
+              <ul className="absolute z-10 w-full max-h-60 overflow-y-auto bg-white border rounded-md mt-1 shadow-lg">
+                {athletes.map((a) => (
+                  <li
+                    key={a.id}
+                    onClick={() => handleAthleteSelect(a.id)} // main li click
+                    className="cursor-pointer flex items-center p-2 hover:bg-blue-100"
+                  >
+                    <img
+                      onClick={(e) => {
+                        e.stopPropagation(); // prevent li onClick when image is clicked
+                        setSelectedImage(`${a.picture}`);
+                      }}
+                      src={a.picture}
+                      alt={a.name}
+                      className="w-8 h-8 rounded-full ml-2 object-cover"
+                    />
+                    <div>
+                      {a.name} {a.last_name}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">مقدار فیس</label>
-          <input
-            name="fee"
-            value={formData.fee}
-            onChange={handleChange}
-            type="number"
-            step="0.01"
-            required
-            className="w-full border p-2 rounded-lg"
-            placeholder="مثلاً ۵۰۰"
-          />
-        </div>
+          {/* The rest of the form fields stay unchanged */}
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">
-            مقدار گرفته‌شده
-          </label>
-          <input
-            name="taken"
-            value={formData.taken}
-            onChange={handleChange}
-            type="number"
-            step="0.01"
-            required
-            className="w-full border p-2 rounded-lg"
-            placeholder="مثلاً ۳۰۰"
-          />
-        </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium">مقدار فیس</label>
+            <input
+              name="fee"
+              value={formData.fee}
+              onChange={handleChange}
+              type="number"
+              step="0.01"
+              required
+              className="w-full border p-2 rounded-lg"
+              placeholder="مثلاً ۵۰۰"
+            />
+          </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">باقی‌مانده</label>
-          <input
-            name="remainder"
-            value={formData.fee - formData.taken}
-            type="number"
-            step="0.01"
-            readOnly
-            className="w-full border p-2 rounded-lg bg-gray-100 cursor-not-allowed"
-            placeholder={formData.fee - formData.taken}
-          />
-        </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium">
+              مقدار گرفته‌شده
+            </label>
+            <input
+              name="taken"
+              value={formData.taken}
+              onChange={handleChange}
+              type="number"
+              step="0.01"
+              required
+              className="w-full border p-2 rounded-lg"
+              placeholder="مثلاً ۳۰۰"
+            />
+          </div>
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">تاریخ شروع</label>
-          <input
-            type="date"
-            name="starting_date"
-            value={formData.starting_date}
-            onChange={handleChange}
-            className="w-full border p-2 rounded-lg"
-            required
-          />
-        </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium">باقی‌مانده</label>
+            <input
+              name="remainder"
+              value={formData.fee - formData.taken}
+              type="number"
+              step="0.01"
+              readOnly
+              className="w-full border p-2 rounded-lg bg-gray-100 cursor-not-allowed"
+              placeholder={formData.fee - formData.taken}
+            />
+          </div>
 
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg">
-          {editId ? "ویرایش فیس" : "ثبت فیس"}
-        </button>
-      </form>
+          <div>
+            <label className="block mb-1 text-sm font-medium">تاریخ شروع</label>
+            <input
+              type="date"
+              name="starting_date"
+              value={formData.starting_date}
+              onChange={handleChange}
+              className="w-full border p-2 rounded-lg"
+              required
+            />
+          </div>
+
+          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg">
+            {editId ? "ویرایش فیس" : "ثبت فیس"}
+          </button>
+        </form>
+      )}
       {/* Table stays unchanged */}
       <div className="overflow-x-auto">
         <table className="w-full table-auto border text-sm">
@@ -254,7 +262,7 @@ const Fees = () => {
                   <td className="border p-2">{fee.starting_date}</td>
                   <td className="border p-2 space-x-2">
                     <button
-                      onClick={() => handleEdit(fee)}
+                      onClick={() => { handleEdit(fee); setShowForm(!showForm)}}
                       className="text-blue-600 font-medium"
                     >
                       ویرایش

@@ -131,7 +131,7 @@ const Athletes = () => {
         onClick={() => setShowForm(!showForm)}
         className="mb-4 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
       >
-        {showForm ? "بستن فرم ورزشکار" : "ایجاد ورزشکار جدید"}
+        {showForm ? "بستن فرم ورزشکار" : "افزودن ورزشکار جدید"}
       </button>
       {showForm && (
         <form
