@@ -15,5 +15,3 @@ pillow
 PyJWT
 pytz
 PyYAML
-qlparse
-uritemplate

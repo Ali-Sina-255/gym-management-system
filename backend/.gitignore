@@ -12,6 +12,10 @@ media
 customer
 customer
 # Distribution / packaging
+
+staticfiles/
+media/
+
 .Python
 build/
 develop-eggs/
