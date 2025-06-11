@@ -42,9 +42,8 @@ class Fee(models.Model):
         verbose_name_plural = _("Fees")
 
     def __str__(self):
-        return f"Fee for {self.athlete.name} in {self.get_month_display()} {self.year}"
+        return f"Fee for {self.athlete.name} in."
 
     def save(self, *args, **kwargs):
-        if not self.year:
-            self.year = datetime.now().year
+
         super().save(*args, **kwargs)
