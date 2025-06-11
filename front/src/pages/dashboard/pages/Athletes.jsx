@@ -219,52 +219,63 @@ const Athletes = () => {
           </button>
         </form>
       )}
-      <ul className="space-y-2">
-        {Array.isArray(athletes) &&
-          athletes.length > 0 &&
-          athletes.map((athlete) => (
-            <li
-              key={athlete.id}
-              className="border p-2 flex justify-between items-center gap-4"
-            >
-              {/* Profile Picture */}
-              <img
-                src={
-                  athlete.picture
-                    ? `${athlete.picture}`
-                    : "https://via.placeholder.com/60"
-                }
-                onClick={() => setSelectedImage(`${athlete.picture}`)}
-                alt={`${athlete.name} ${athlete.last_name}`}
-                className="h-14 w-14 object-cover rounded-full border"
-              />
+      <table className="min-w-full border border-gray-300 rounded-md shadow-sm text-sm">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="p-2 border">عکس</th>
+            <th className="p-2 border">نام</th>
+            <th className="p-2 border">نام خانوادگی</th>
+            <th className="p-2 border">عملیات</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Array.isArray(athletes) &&
+            athletes.length > 0 &&
+            athletes.map((athlete) => (
+              <tr key={athlete.id} className="hover:bg-gray-50">
+                {/* Picture column */}
+                <td className="p-2 border text-center">
+                  <img
+                    src={
+                      athlete.picture
+                        ? `${athlete.picture}`
+                        : "https://via.placeholder.com/60"
+                    }
+                    onClick={() => setSelectedImage(`${athlete.picture}`)}
+                    alt={`${athlete.name} ${athlete.last_name}`}
+                    className="h-12 w-12 object-cover rounded-full mx-auto border cursor-pointer"
+                  />
+                </td>
 
-              {/* Athlete Info */}
-              <span className="flex-1">
-                {athlete.name} - {athlete.last_name}
-              </span>
+                {/* Name */}
+                <td className="p-2 border text-center">{athlete.name}</td>
 
-              {/* Actions */}
-              <div className="space-x-2">
-                <button
-                  onClick={() => {
-                    handleEdit(athlete);
-                    setShowForm(!showForm);
-                  }}
-                  className="bg-yellow-400 px-2 py-1 rounded"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(athlete.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded"
-                >
-                  Delete
-                </button>
-              </div>
-            </li>
-          ))}
-      </ul>
+                {/* Last name */}
+                <td className="p-2 border text-center">{athlete.last_name}</td>
+
+                {/* Actions */}
+                <td className="p-2 border text-center space-x-2">
+                  <button
+                    onClick={() => {
+                      handleEdit(athlete);
+                      setShowForm(true); // open form for editing
+                    }}
+                    className="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500"
+                  >
+                    ویرایش
+                  </button>
+                  <button
+                    onClick={() => handleDelete(athlete.id)}
+                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                  >
+                    حذف
+                  </button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+
       {/* Image Modal */}
       <ImageModal
         imageSrc={selectedImage ? `${selectedImage}` : null}

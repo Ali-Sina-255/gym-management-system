@@ -239,6 +239,7 @@ const Fees = () => {
         <table className="w-full table-auto border text-sm">
           <thead className="bg-gray-100">
             <tr>
+              <th className="border p-2">تصویر ورزشکار</th>
               <th className="border p-2">نام ورزشکار</th>
               <th className="border p-2">مقدار فیس</th>
               <th className="border p-2">گرفته‌شده</th>
@@ -248,37 +249,56 @@ const Fees = () => {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(fees) &&
-              fees.length > 0 &&
-              fees.map((fee) => (
-                <tr key={fee.id} className="text-center">
-                  <td className="border p-2">
-                    {athletes.find((a) => a.id === fee.athlete)?.name ||
-                      "نامشخص"}
-                  </td>
-                  <td className="border p-2">{fee.fee}</td>
-                  <td className="border p-2">{fee.taken}</td>
-                  <td className="border p-2">{fee.remainder}</td>
-                  <td className="border p-2">{fee.starting_date}</td>
-                  <td className="border p-2 space-x-2">
-                    <button
-                      onClick={() => { handleEdit(fee); setShowForm(!showForm)}}
-                      className="text-blue-600 font-medium"
-                    >
-                      ویرایش
-                    </button>
-                    <button
-                      onClick={() => handleDelete(fee.id)}
-                      className="text-red-600 font-medium"
-                    >
-                      حذف
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            {fees.length === 0 && (
+            {Array.isArray(fees) && fees.length > 0 ? (
+              fees.map((fee) => {
+                const athlete = athletes.find((a) => a.id === fee.athlete);
+                return (
+                  <tr key={fee.id} className="text-center">
+                    <td className="border p-2">
+                      {athlete ? (
+                        <img
+                          src={
+                            `${athlete.picture} `|| "https://via.placeholder.com/60"
+                          }
+                          alt={`${athlete.name} ${athlete.last_name}`}
+                          className="h-10 w-10 rounded-full mx-auto object-cover"
+                        />
+                      ) : (
+                        "نامشخص"
+                      )}
+                    </td>
+                    <td className="border p-2">
+                      {athlete
+                        ? `${athlete.name} ${athlete.last_name}`
+                        : "نامشخص"}
+                    </td>
+                    <td className="border p-2">{fee.fee}</td>
+                    <td className="border p-2">{fee.taken}</td>
+                    <td className="border p-2">{fee.remainder}</td>
+                    <td className="border p-2">{fee.starting_date}</td>
+                    <td className="border p-2 space-x-2">
+                      <button
+                        onClick={() => {
+                          handleEdit(fee);
+                          setShowForm(true); // Open form on edit
+                        }}
+                        className="text-blue-600 font-medium hover:underline"
+                      >
+                        ویرایش
+                      </button>
+                      <button
+                        onClick={() => handleDelete(fee.id)}
+                        className="text-red-600 font-medium hover:underline"
+                      >
+                        حذف
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            ) : (
               <tr>
-                <td colSpan="6" className="p-4 text-gray-500 text-center">
+                <td colSpan="7" className="p-4 text-gray-500 text-center">
                   هیچ فیس ثبت نشده است.
                 </td>
               </tr>
