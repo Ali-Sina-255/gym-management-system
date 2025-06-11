@@ -8,7 +8,7 @@ class AthleteSerializer(serializers.ModelSerializer):
         model = Athlete
         fields = [
             "id",
-            "first_name",
+            "name",
             "last_name",
             "father_name",
             "current_location",
