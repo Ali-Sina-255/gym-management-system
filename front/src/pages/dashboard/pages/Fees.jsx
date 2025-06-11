@@ -99,7 +99,9 @@ const Fees = () => {
       className="max-w-4xl mx-auto mt-8 p-4 bg-white rounded-xl shadow-lg"
       dir="rtl"
     >
-      <h2 className="text-2xl font-bold mb-4 text-center">مدیریت فیس‌ها</h2>
+      <h2 className="text-xl font-bold mb-4 text-gray-800 border-b border-gray-300 pb-2 text-center">
+        مدیریت فیس‌ها
+      </h2>
       {/* Form */}
       <button
         onClick={() => setShowForm(!showForm)}

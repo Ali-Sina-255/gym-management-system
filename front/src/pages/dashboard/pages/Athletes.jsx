@@ -126,7 +126,7 @@ const Athletes = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-lg">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+      <h1 className="text-xl font-bold mb-4 text-gray-800 border-b border-gray-300 pb-2 text-center">
         مدیریت ورزشکاران
       </h1>
 
