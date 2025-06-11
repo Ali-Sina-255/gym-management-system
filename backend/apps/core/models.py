@@ -42,7 +42,7 @@ class Fee(models.Model):
         verbose_name_plural = _("Fees")
 
     def __str__(self):
-        return f"Fee for {self.athlete.name} in."
+        return f"Fee for {self.athlete.name}"
 
     def save(self, *args, **kwargs):
 
