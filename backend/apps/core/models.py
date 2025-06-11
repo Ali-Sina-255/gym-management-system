@@ -26,8 +26,7 @@ class Athlete(models.Model):
 
 
 class Fee(models.Model):
-
-    athlete = models.ForeignKey( Athlete, on_delete=models.CASCADE, related_name="athlete")
+    athlete = models.ForeignKey(Athlete, on_delete=models.CASCADE, related_name="athlete")
     fee = models.DecimalField(max_digits=10, decimal_places=2)
     taken = models.DecimalField(max_digits=10, decimal_places=2)
     remainder = models.DecimalField(max_digits=10, decimal_places=2)
