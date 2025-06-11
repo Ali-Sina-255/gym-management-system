@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Athlete(models.Model):
     name = models.CharField(max_length=255)
-    las_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
     father_name = models.CharField(max_length=255)
     current_location = models.CharField(max_length=255)
     permanent_location = models.CharField(max_length=255)

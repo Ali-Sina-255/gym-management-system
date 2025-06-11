@@ -8,13 +8,13 @@ from .models import Athlete, Fee
 class AthleteAdmin(admin.ModelAdmin):
     list_display = (
         "name",
-        "las_name",
+        "last_name",
         "father_name",
         "current_location",
         "created_at",
         "updated_at",
     )
-    search_fields = ("name", "las_name", "father_name")
+    search_fields = ("name", "last_name", "father_name")
     list_filter = ("created_at", "updated_at")
     ordering = ("created_at",)
 
