@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "apps.core",
-    'apps.users',
 ]
 
 MIDDLEWARE = [
@@ -132,5 +131,4 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
