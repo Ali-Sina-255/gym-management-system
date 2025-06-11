@@ -125,20 +125,24 @@ const Athletes = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">مدیریت ورزشکاران</h1>
+    <div className="p-6 max-w-4xl mx-auto bg-white rounded-xl shadow-lg">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+        مدیریت ورزشکاران
+      </h1>
+
       <button
         onClick={() => setShowForm(!showForm)}
-        className="mb-4 bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition"
+        className="mb-6 w-full max-w-sm mx-auto block bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300 shadow-md"
       >
         {showForm ? "بستن فرم ورزشکار" : "افزودن ورزشکار جدید"}
       </button>
+
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="mb-8 space-y-6 bg-white p-6 rounded-2xl shadow-lg max-w-2xl mx-auto"
+          className="mb-10 space-y-6 bg-gray-50 p-8 rounded-2xl shadow-inner max-w-3xl mx-auto"
         >
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
+          <h2 className="text-3xl font-semibold text-gray-900 mb-8 text-center">
             {editId ? "ویرایش ورزشکار" : "ایجاد ورزشکار"}
           </h2>
 
@@ -153,7 +157,7 @@ const Athletes = () => {
             <div key={name} className="relative">
               <label
                 htmlFor={name}
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-md font-medium text-gray-700 mb-2"
               >
                 {label}
               </label>
@@ -163,10 +167,12 @@ const Athletes = () => {
                 type={type}
                 value={formData[name]}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                placeholder={`لطفاً ${label.toLowerCase()} را وارد کنید`}
               />
             </div>
           ))}
+
           {[
             { name: "nic", label: "فایل تذکره/کارت هویت" },
             { name: "picture", label: "عکس" },
@@ -175,33 +181,33 @@ const Athletes = () => {
             <div key={name} className="relative">
               <label
                 htmlFor={name}
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-md font-medium text-gray-700 mb-2"
               >
                 {label}
               </label>
               <input
-                ref={fileInputRefs[name]} // ✅ ref set dynamically
+                ref={fileInputRefs[name]} // dynamic ref
                 id={name}
                 name={name}
                 type="file"
                 accept={name === "picture" ? "image/*" : undefined}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 bg-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition cursor-pointer"
               />
               {previews[name] && (
-                <div className="mt-2">
+                <div className="mt-3">
                   {name === "picture" || name === "nic" ? (
                     <img
                       src={previews[name]}
                       alt={label}
-                      className="h-24 rounded border"
+                      className="h-28 rounded-lg border shadow-sm object-contain"
                     />
                   ) : (
                     <a
                       href={previews[name]}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 underline text-sm"
+                      className="text-blue-600 underline text-sm hover:text-blue-800 transition"
                     >
                       مشاهده فایل
                     </a>
@@ -213,60 +219,72 @@ const Athletes = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
+            className="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 shadow-md"
           >
             {editId ? "ویرایش ورزشکار" : "ایجاد ورزشکار"}
           </button>
         </form>
       )}
-      <table className="min-w-full border border-gray-300 rounded-md shadow-sm text-sm">
-        <thead className="bg-gray-100">
+
+      <table className="min-w-full border border-gray-300 rounded-lg shadow-md text-sm bg-white">
+        <thead className="bg-gradient-to-r from-blue-100 to-blue-200">
           <tr>
-            <th className="p-2 border">عکس</th>
-            <th className="p-2 border">نام</th>
-            <th className="p-2 border">نام خانوادگی</th>
-            <th className="p-2 border">عملیات</th>
+            <th className="p-3 border border-gray-300 text-center font-semibold text-gray-700">
+              عکس
+            </th>
+            <th className="p-3 border border-gray-300 text-center font-semibold text-gray-700">
+              نام
+            </th>
+            <th className="p-3 border border-gray-300 text-center font-semibold text-gray-700">
+              نام خانوادگی
+            </th>
+            <th className="p-3 border border-gray-300 text-center font-semibold text-gray-700">
+              عملیات
+            </th>
           </tr>
         </thead>
         <tbody>
           {Array.isArray(athletes) &&
             athletes.length > 0 &&
             athletes.map((athlete) => (
-              <tr key={athlete.id} className="hover:bg-gray-50">
-                {/* Picture column */}
-                <td className="p-2 border text-center">
+              <tr
+                key={athlete.id}
+                className="hover:bg-blue-50 transition-colors cursor-pointer"
+              >
+                <td className="p-3 border border-gray-300 text-center">
                   <img
                     src={
                       athlete.picture
-                        ? `${athlete.picture}`
-                        : "https://via.placeholder.com/60"
+                        ? athlete.picture
+                        : "https://via.placeholder.com/60?text=No+Image"
                     }
-                    onClick={() => setSelectedImage(`${athlete.picture}`)}
+                    onClick={() => setSelectedImage(athlete.picture)}
                     alt={`${athlete.name} ${athlete.last_name}`}
-                    className="h-12 w-12 object-cover rounded-full mx-auto border cursor-pointer"
+                    className="h-14 w-14 object-cover rounded-full mx-auto border shadow-sm cursor-pointer"
                   />
                 </td>
 
-                {/* Name */}
-                <td className="p-2 border text-center">{athlete.name}</td>
+                <td className="p-3 border border-gray-300 text-center font-medium text-gray-800">
+                  {athlete.name}
+                </td>
 
-                {/* Last name */}
-                <td className="p-2 border text-center">{athlete.last_name}</td>
+                <td className="p-3 border border-gray-300 text-center font-medium text-gray-800">
+                  {athlete.last_name}
+                </td>
 
-                {/* Actions */}
-                <td className="p-2 border text-center space-x-2">
+                <td className="p-3 border border-gray-300 text-center space-x-2">
                   <button
                     onClick={() => {
                       handleEdit(athlete);
-                      setShowForm(true); // open form for editing
+                      setShowForm(true);
                     }}
-                    className="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500"
+                    className="bg-yellow-400 px-4 py-1 rounded-lg hover:bg-yellow-500 transition duration-200 shadow-sm"
                   >
                     ویرایش
                   </button>
                   <button
                     onClick={() => handleDelete(athlete.id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                    className="bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600 transition duration-200 shadow-sm"
                   >
                     حذف
                   </button>
@@ -278,7 +296,7 @@ const Athletes = () => {
 
       {/* Image Modal */}
       <ImageModal
-        imageSrc={selectedImage ? `${selectedImage}` : null}
+        imageSrc={selectedImage ? selectedImage : null}
         onClose={() => setSelectedImage(null)}
       />
     </div>

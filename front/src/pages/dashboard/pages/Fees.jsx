@@ -237,7 +237,7 @@ const Fees = () => {
       {/* Table stays unchanged */}
       <div className="overflow-x-auto">
         <table className="w-full table-auto border text-sm">
-          <thead className="bg-gray-100">
+          <thead className="bg-gradient-to-r from-blue-100 to-blue-200">
             <tr>
               <th className="border p-2">تصویر ورزشکار</th>
               <th className="border p-2">نام ورزشکار</th>
@@ -258,7 +258,8 @@ const Fees = () => {
                       {athlete ? (
                         <img
                           src={
-                            `${athlete.picture} `|| "https://via.placeholder.com/60"
+                            `${athlete.picture} ` ||
+                            "https://via.placeholder.com/60"
                           }
                           alt={`${athlete.name} ${athlete.last_name}`}
                           className="h-10 w-10 rounded-full mx-auto object-cover"
