@@ -61,6 +61,7 @@ const ActiveAthletes = () => {
                   "فیس",
                   "فیس گرفته‌شده",
                   "فیس باقی",
+                  "روزهای باقی‌مانده",
                 ].map((header) => (
                   <th
                     key={header}
@@ -72,42 +73,57 @@ const ActiveAthletes = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-100">
-              {fees.map((fee) => (
-                <tr
-                  key={fee.id}
-                  className="hover:bg-blue-50 transition-colors duration-200 cursor-pointer"
-                >
-                  <td className="px-4 py-3 border-r border-gray-200 text-center">
-                    {fee.athlete?.picture ? (
-                      <img
-                        src={fee.athlete.picture}
-                        alt={`${fee.athlete.name} ${fee.athlete.last_name}`}
-                        className="h-12 w-12 rounded-full object-cover shadow-sm mx-auto"
-                      />
-                    ) : (
-                      <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs font-semibold mx-auto">
-                        بدون تصویر
-                      </div>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-gray-800 font-medium text-right">
-                    {fee.athlete?.name || "نامشخص"}{" "}
-                    {fee.athlete?.last_name || ""}
-                  </td>
-                  <td className="px-4 py-3 text-gray-600 text-right">
-                    {fee.starting_date}
-                  </td>
-                  <td className="px-4 py-3 text-gray-600 text-right">
-                    {fee.fee}
-                  </td>
-                  <td className="px-4 py-3 text-gray-600 text-right">
-                    {fee.taken}
-                  </td>
-                  <td className="px-4 py-3 text-gray-600 text-right">
-                    {fee.remainder}
-                  </td>
-                </tr>
-              ))}
+              {fees.map((fee) => {
+                // Calculate remaining days
+                const startingDate = new Date(fee.starting_date);
+                const expiryDate = new Date(startingDate);
+                expiryDate.setDate(expiryDate.getDate() + 30);
+
+                const today = new Date();
+                const diffTime = expiryDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // convert ms to days
+                const remainingDays = diffDays > 0 ? diffDays : 0;
+
+                return (
+                  <tr
+                    key={fee.id}
+                    className="hover:bg-blue-50 transition-colors duration-200 cursor-pointer"
+                  >
+                    <td className="px-4 py-3 border-r border-gray-200 text-center">
+                      {fee.athlete?.picture ? (
+                        <img
+                          src={fee.athlete.picture}
+                          alt={`${fee.athlete.name} ${fee.athlete.last_name}`}
+                          className="h-12 w-12 rounded-full object-cover shadow-sm mx-auto"
+                        />
+                      ) : (
+                        <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs font-semibold mx-auto">
+                          بدون تصویر
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-gray-800 font-medium text-right">
+                      {fee.athlete?.name || "نامشخص"}{" "}
+                      {fee.athlete?.last_name || ""}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 text-right">
+                      {fee.starting_date}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 text-right">
+                      {fee.fee}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 text-right">
+                      {fee.taken}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 text-right">
+                      {fee.remainder}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600 text-right font-semibold">
+                      {remainingDays > 0 ? remainingDays : "تمام شده"}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
