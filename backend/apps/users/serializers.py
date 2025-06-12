@@ -34,12 +34,9 @@ class CreateUserSerializer(serializers.ModelSerializer):
             "password_confirm",
         ]
 
-    def validate(self, data):
+    def validate(self, data):  # type: ignore
         if data["password"] != data["password_confirm"]:
             raise ValidationError("Passwords must match.")
-        role = data.get("role")
-        if role not in dict(User.ROLE_CHOICES):
-            raise ValidationError("Invalid role.")
         return data
 
     def create(self, validated_data):
@@ -79,7 +76,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token["email"] = user.email
         token["first_name"] = user.first_name
-        token["role"] = (user.role,)
+        token["role"] = user.role.name if user.role else None
         token["is_admin"] = user.is_admin
         token["is_active"] = user.is_active
         token["phone_number"] = user.phone_number
@@ -108,7 +105,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             "confirm_password",
         ]
 
-    def validate(self, data):
+    def validate(self, data):  # type: ignore
         password = data.get("password")
         confirm_password = data.get("confirm_password")
         old_password = data.get("old_password")
@@ -131,7 +128,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             try:
                 validate_password(password, user)
             except ValidationError as e:
-                raise ValidationError({"password": list(e.messages)})
+                raise ValidationError({"password": list(e.messages)})  # type: ignore
 
         return data
 
