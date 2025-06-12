@@ -33,7 +33,7 @@ const CreateUser = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingUserId, setEditingUserId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [roles, setRoles] = useState([]);
   const initialFormData = {
     first_name: "",
     last_name: "",
@@ -50,18 +50,10 @@ const CreateUser = () => {
   };
   const [formData, setFormData] = useState(initialFormData);
 
-  const roles = {
-    0: "ادمین", // This might map to is_admin=true or a custom role field
-    1: "مدیر",
-    3: "صاحب امتیاز",
-  };
-
   const fetchUsers = async () => {
     setListLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}/users/user/`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const response = await fetch(`${BASE_URL}/user/user/`);
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText || "Failed to fetch users");
@@ -75,7 +67,23 @@ const CreateUser = () => {
       setListLoading(false);
     }
   };
+  const fetchRoles = async () => {
+    setListLoading(true);
+    try {
+      const response = await fetch(`${BASE_URL}/user/role/`);
+      const data = await response.json(); // ✅ Parse the JSON body
+      setRoles(data); // ✅ Store in state
+    } catch (err) {
+      setListError(err.message);
+      toast.error(`خطا در دریافت لیست کاربران: ${err.message}`);
+    } finally {
+      setListLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    fetchRoles();
+  }, []);
   useEffect(() => {
     if (accessToken) {
       fetchUsers();
@@ -155,11 +163,8 @@ const CreateUser = () => {
 
       try {
         await axios.patch(
-          `${BASE_URL}/users/user/${editingUserId}/`,
-          updateData,
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
+          `${BASE_URL}/user/user/${editingUserId}/`,
+          updateData
         );
         toast.success("کاربر با موفقیت ویرایش شد!");
         fetchUsers();
@@ -218,9 +223,7 @@ const CreateUser = () => {
       if (result.isConfirmed) {
         try {
           setIsSubmitting(true);
-          await axios.delete(`${BASE_URL}/users/user/${userId}/`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
+          await axios.delete(`${BASE_URL}/user/user/${userId}/`);
           toast.success(`کاربر "${userName}" با موفقیت حذف شد.`);
           fetchUsers();
         } catch (err) {
@@ -268,8 +271,6 @@ const CreateUser = () => {
             <PulseLoader size={10} color="#3B82F6" />
             <p className="mt-4">در حال دریافت کاربران...</p>
           </div>
-        ) : listError ? (
-          <div className="p-8 text-center text-red-500">خطا: {listError}</div>
         ) : users.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
             هیچ کاربری یافت نشد
@@ -316,7 +317,8 @@ const CreateUser = () => {
                     <td className="px-4 py-3 text-gray-600">{user.email}</td>
                     <td className="px-4 py-3">
                       <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm">
-                        {roles[user.role] || "نا مشخص"}
+                        {roles.find((role) => role.id == user.role)?.name ||
+                          "نا مشخص"}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
@@ -381,7 +383,6 @@ const CreateUser = () => {
             <form onSubmit={handleSubmit} className="p-5 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                 {[
-                 
                   {
                     icon: FiUser,
                     name: "first_name",
@@ -411,7 +412,7 @@ const CreateUser = () => {
                     name: "role",
                     label: "نقش",
                     type: "select",
-                    options: Object.entries(roles),
+                    options: roles,
                   },
                   {
                     icon: FiLock,
@@ -464,9 +465,9 @@ const CreateUser = () => {
                           required={!editingUserId || field.name === "role"}
                         >
                           <option value="">انتخاب کنید</option>
-                          {field.options.map(([key, value]) => (
-                            <option key={key} value={key}>
-                              {value}
+                          {field.options.map((role) => (
+                            <option key={role.id} value={role.id}>
+                              {role.name}
                             </option>
                           ))}
                         </select>
@@ -522,70 +523,6 @@ const CreateUser = () => {
                       <FiActivity className="ml-1 w-4 h-4 text-gray-500" /> فعال
                     </label>
                   </div>
-
-                  {/* is_admin (or is_staff if that's your Django field) */}
-                  {/* <div className="flex items-center space-x-2 space-x-reverse">
-                    <input
-                      type="checkbox"
-                      name="is_admin" // Corresponds to API field `is_admin`
-                      id="is_admin_checkbox"
-                      checked={formData.is_admin}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label
-                      htmlFor="is_admin_checkbox"
-                      className="text-sm font-medium text-gray-700 flex items-center"
-                    >
-                      <FiShield className="ml-1 w-4 h-4 text-gray-500" /> ادمین
-                    </label>
-                  </div> */}
-
-                  {/* is_staff (if it's a separate concept from is_admin in your model) */}
-                  {/* Your API output only shows 'is_admin', 'is_staff', 'is_superadmin'.
-                        'is_admin' in DRF often maps to User.is_staff.
-                        If your User model has a separate 'is_admin' field distinct from 'is_staff', use it.
-                        Otherwise, this 'is_admin' checkbox likely controls Django's 'is_staff'.
-                        Let's assume 'is_staff' from API means Django's 'is_staff' and
-                        'is_admin' from API means your custom 'is_admin' field.
-                        If 'is_admin' IS Django's 'is_staff', then you might only need one checkbox for it.
-                        For now, I'll include both as per your API output.
-                    */}
-                  {/* <div className="flex items-center space-x-2 space-x-reverse">
-                    <input
-                      type="checkbox"
-                      name="is_staff" // Corresponds to API field `is_staff`
-                      id="is_staff_checkbox"
-                      checked={formData.is_staff}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label
-                      htmlFor="is_staff_checkbox"
-                      className="text-sm font-medium text-gray-700 flex items-center"
-                    >
-                      <FiShield className="ml-1 w-4 h-4 text-gray-500" /> کارمند
-                      (Staff)
-                    </label>
-                  </div> */}
-
-                  {/* is_superadmin */}
-                  {/* <div className="flex items-center space-x-2 space-x-reverse">
-                    <input
-                      type="checkbox"
-                      name="is_superadmin"
-                      id="is_superadmin_checkbox"
-                      checked={formData.is_superadmin}
-                      onChange={handleChange}
-                      className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <label
-                      htmlFor="is_superadmin_checkbox"
-                      className="text-sm font-medium text-gray-700 flex items-center"
-                    >
-                      <FiAward className="ml-1 w-4 h-4 text-gray-500" /> مدیر کل
-                    </label>
-                  </div> */}
                 </div>
               </div>
               <div className="md:col-span-2 flex gap-3 justify-end pt-5 border-t mt-5">

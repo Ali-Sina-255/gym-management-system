@@ -35,7 +35,7 @@ urlpatterns = [
         UserViewSet.as_view({"post": "create_user"}),
         name="create_user",
     ),
-    path("roles/", RoleChoicesView.as_view()),
+    path("role/", RoleChoicesView.as_view()),
     path("profiles/", UserProfileView.as_view(), name="user-profile"),
     path("create/", CreateUserView.as_view(), name="create_user"),
     path("activate/<uidb64>/<token>/", activate_account, name="activate_account"),

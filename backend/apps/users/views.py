@@ -143,7 +143,7 @@ class CreateUserView(generics.CreateAPIView):
                     return Response(
                         {
                             "message": "User created successfully. Please check your email to verify your account.",
-                            "roles": dict(User.ROLE_CHOICES),
+                            
                         },
                         status=status.HTTP_201_CREATED,
                     )
@@ -184,14 +184,11 @@ def activate_account(request, uidb64, token):
         return HttpResponse("Invalid activation link", status=400)
 
 
-class RoleChoicesView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        # Return the role choices from the User model
-        roles = dict(User.ROLE_CHOICES)
-        return Response(roles)
-
+class RoleChoicesView(generics.ListCreateAPIView):
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
+    permission_classes = [AllowAny]
+    
 
 class DeleteUserView(generics.DestroyAPIView):
     queryset = User.objects.all()

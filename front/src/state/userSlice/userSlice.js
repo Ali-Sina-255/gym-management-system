@@ -17,7 +17,7 @@ export const signIn = createAsyncThunk(
   "user/signIn",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/users/token/`, credentials);
+      const response = await axios.post(`${BASE_URL}/user/token/`, credentials);
       const { access, refresh } = response.data;
 
       // Decode token to get user info initially (less ideal than dedicated endpoint)
@@ -88,9 +88,11 @@ export const createUser = createAsyncThunk(
        // *** Determine endpoint and if auth is needed ***
        // If admin creates user via UserViewSet: /users/user/create_user/ (POST)
        // If public registration: /users/create/ (POST)
-       const endpoint = `${BASE_URL}/users/create/`; // Example: Public registration endpoint
+       const endpoint = `${BASE_URL}/user/create/`; // Example: Public registration endpoint
        // const { accessToken } = getState().user; // Get token if required
-       const response = await axios.post(
+      console.log(userData);
+       
+      const response = await axios.post(
          endpoint,
          userData
          // { headers: { Authorization: `Bearer ${accessToken}` } } // Add headers if auth needed
@@ -99,7 +101,9 @@ export const createUser = createAsyncThunk(
     } catch (error) {
         const errorData = error.response?.data;
         const message = typeof errorData === 'string' ? errorData : errorData?.detail || JSON.stringify(errorData) || "User creation failed";
-        return rejectWithValue(message);
+      console.log(error);
+        
+      return rejectWithValue(message);
     }
   }
 );
